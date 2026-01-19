@@ -19,10 +19,16 @@ struct arguments
     pthread_barrier_t *barrier;
 };
 
+
+
+
 void* thread_func(void *arg) {
     struct arguments *args = (struct arguments *)arg;
     for (int round = 0; round < ROUNDS; ++round) {
         args->rolls[args->id] = 1 + rand_r(&args->seed) % 6;
+        struct timespec ts;
+        ts.tv_nsec = 300 * 1000000 + rand_r(&args->seed) % 1000000000; // 
+        nanosleep(&ts, NULL);
         printf("player %d: Rolled %d.\n", args->id, args->rolls[args->id]);
         
         int result = pthread_barrier_wait(args->barrier);
