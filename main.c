@@ -67,5 +67,26 @@ void create_threads(pthread_t *thread, struct arguments *targ, pthread_barrier_t
 }
 
 int main() {
+    pthread_t threads[PLAYER_COUNT];
+    struct arguments targ[PLAYER_COUNT];
+    int scores[PLAYER_COUNT] = {0};
+    int rolls[PLAYER_COUNT];
+    pthread_barrier_t barrier;
+    
+    pthread_barrier_init(&barrier, NULL, PLAYER_COUNT);
+    
+    create_threads(threads, targ, &barrier, scores, rolls);
+    
+    for (int i = 0; i < PLAYER_COUNT; i++) {
+        pthread_join(threads[i], NULL);
+    }
+    
+    puts("Scores: ");
+    for (int i = 0; i < PLAYER_COUNT; ++i) {
+        printf("ID %d: %i\n", i, scores[i]);
+    }
+    
+    pthread_barrier_destroy(&barrier);
+    
     return 0;
 }
